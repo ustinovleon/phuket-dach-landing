@@ -333,7 +333,7 @@ export default function ContactSection() {
                   />
                   <span className="text-sm text-slate-600">
                     Ich stimme der Verarbeitung meiner Daten gemäß der{' '}
-                    <a href="/datenschutz.html" className="text-brand-600 hover:underline">
+                    <a href="/datenschutz" className="text-brand-600 hover:underline">
                       Datenschutzerklärung
                     </a>{' '}
                     zu. *

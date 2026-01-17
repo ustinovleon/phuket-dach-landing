@@ -7,8 +7,8 @@ import { LogOut, Trash2, Eye, EyeOff, Settings, Users, Plus, Pencil } from 'luci
 export default function AdminPage() {
   const { user, logout, login, properties, leads, addProperty, updateProperty, deleteProperty } = useData();
   
-  const [loginEmail, setLoginEmail] = useState('');
-  const [loginPassword, setLoginPassword] = useState('');
+  const [loginEmail, setLoginEmail] = useState('admin@demo.com');
+  const [loginPassword, setLoginPassword] = useState('demo123');
   const [loginError, setLoginError] = useState('');
   const [activeTab, setActiveTab] = useState<'properties' | 'leads'>('properties');
   
@@ -62,6 +62,10 @@ export default function AdminPage() {
             
             <button type="submit" className="w-full btn-primary !py-3">Anmelden</button>
           </form>
+          
+          <div className="mt-6 p-4 bg-slate-50 rounded-lg text-xs text-slate-500 text-center">
+            <strong>Demo:</strong> admin@demo.com / demo123
+          </div>
         </div>
       </div>
     );

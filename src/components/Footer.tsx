@@ -97,22 +97,22 @@ export default function Footer() {
             <h4 className="font-medium text-white mb-4">Rechtliches</h4>
             <ul className="space-y-2">
               <li>
-                <a href="/impressum.html" className="text-slate-400 hover:text-white text-sm transition-colors">
+                <a href="/impressum" className="text-slate-400 hover:text-white text-sm transition-colors">
                   Impressum
                 </a>
               </li>
               <li>
-                <a href="/datenschutz.html" className="text-slate-400 hover:text-white text-sm transition-colors">
+                <a href="/datenschutz" className="text-slate-400 hover:text-white text-sm transition-colors">
                   Datenschutz
                 </a>
               </li>
               <li>
-                <a href="/cookie-richtlinie.html" className="text-slate-400 hover:text-white text-sm transition-colors">
+                <a href="/cookies" className="text-slate-400 hover:text-white text-sm transition-colors">
                   Cookie-Richtlinie
                 </a>
               </li>
               <li>
-                <a href="/agb.html" className="text-slate-400 hover:text-white text-sm transition-colors">
+                <a href="/agb" className="text-slate-400 hover:text-white text-sm transition-colors">
                   AGB
                 </a>
               </li>
