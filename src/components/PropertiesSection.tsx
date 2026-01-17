@@ -7,10 +7,10 @@ import { categoryArguments } from '../data/demo-data';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { Check, AlertCircle, HelpCircle } from 'lucide-react';
 
-const tabs: { id: StatusCategory; label: string }[] = [
-  { id: 'READY', label: 'Sofort verfügbar' },
-  { id: '2026', label: 'Fertigstellung 2026' },
-  { id: '2027', label: 'Fertigstellung 2027' },
+const tabs: { id: StatusCategory; label: string; shortLabel: string }[] = [
+  { id: 'READY', label: 'Sofort verfügbar', shortLabel: 'Verfügbar' },
+  { id: '2026', label: 'Fertigstellung 2026', shortLabel: '2026' },
+  { id: '2027', label: 'Fertigstellung 2027', shortLabel: '2027' },
 ];
 
 export default function PropertiesSection() {
@@ -29,13 +29,13 @@ export default function PropertiesSection() {
 
   if (isLoading) {
     return (
-      <section id="objekte" className="py-20 md:py-32 bg-white">
+      <section id="objekte" className="py-12 sm:py-20 md:py-32 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="animate-pulse space-y-8">
-            <div className="h-8 bg-slate-200 rounded w-1/3" />
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="h-8 bg-slate-200 rounded w-2/3 sm:w-1/3" />
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-96 bg-slate-200 rounded-2xl" />
+                <div key={i} className="h-80 sm:h-96 bg-slate-200 rounded-2xl" />
               ))}
             </div>
           </div>
@@ -45,86 +45,101 @@ export default function PropertiesSection() {
   }
 
   return (
-    <section id="objekte" className="py-20 md:py-32 bg-white">
+    <section id="objekte" className="py-12 sm:py-20 md:py-32 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl mb-12">
-          <span className="text-brand-600 font-medium text-sm tracking-wide uppercase mb-3 block">
+        {/* Header */}
+        <div className="max-w-3xl mb-8 sm:mb-12">
+          <span className="text-brand-600 font-medium text-xs sm:text-sm tracking-wide uppercase mb-2 sm:mb-3 block">
             Objektkatalog
           </span>
-          <h2 className="section-title mb-6">
+          <h2 className="section-title text-2xl sm:text-3xl md:text-4xl lg:text-5xl mb-4 sm:mb-6">
             Ausgewählte Projekte für DACH-Investoren
           </h2>
-          <p className="section-subtitle">
+          <p className="section-subtitle text-base sm:text-lg md:text-xl">
             Geprüfte Objekte mit transparenter Kostenstruktur. 
             Sortiert nach Verfügbarkeit und Fertigstellungszeitpunkt.
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-2 mb-8 p-1 bg-slate-100 rounded-xl inline-flex">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => handleTabChange(tab.id)}
-              className={`px-6 py-3 rounded-lg font-medium transition-all ${
-                activeTab === tab.id
-                  ? 'bg-white text-slate-900 shadow-sm'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              {tab.label}
-              <span className={`ml-2 text-xs px-2 py-0.5 rounded-full ${
-                activeTab === tab.id
-                  ? 'bg-brand-100 text-brand-700'
-                  : 'bg-slate-200 text-slate-500'
-              }`}>
-                {propertiesByCategory[tab.id].length}
-              </span>
-            </button>
-          ))}
+        {/* Tabs - scrollable on mobile */}
+        <div className="mb-6 sm:mb-8 -mx-4 px-4 sm:mx-0 sm:px-0">
+          <div className="flex gap-2 p-1 bg-slate-100 rounded-xl overflow-x-auto sm:overflow-visible sm:inline-flex scrollbar-hide">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => handleTabChange(tab.id)}
+                className={`flex-shrink-0 px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-medium transition-all text-sm sm:text-base ${
+                  activeTab === tab.id
+                    ? 'bg-white text-slate-900 shadow-sm'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <span className="hidden sm:inline">{tab.label}</span>
+                <span className="sm:hidden">{tab.shortLabel}</span>
+                <span className={`ml-2 text-xs px-1.5 sm:px-2 py-0.5 rounded-full ${
+                  activeTab === tab.id
+                    ? 'bg-brand-100 text-brand-700'
+                    : 'bg-slate-200 text-slate-500'
+                }`}>
+                  {propertiesByCategory[tab.id].length}
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
 
+        {/* Category Arguments - collapsible cards on mobile */}
         {currentArguments && (
-          <div className="mb-12 grid lg:grid-cols-3 gap-6">
-            <div className="bg-brand-50 rounded-xl p-6 border border-brand-100">
-              <div className="flex items-center gap-2 mb-4">
-                <Check className="w-5 h-5 text-brand-600" />
-                <h3 className="font-display text-lg text-slate-900">Vorteile</h3>
+          <div className="mb-8 sm:mb-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            {/* Vorteile */}
+            <div className="bg-brand-50 rounded-xl p-4 sm:p-6 border border-brand-100">
+              <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                <div className="w-8 h-8 bg-brand-100 rounded-lg flex items-center justify-center">
+                  <Check className="w-4 h-4 sm:w-5 sm:h-5 text-brand-600" />
+                </div>
+                <h3 className="font-display text-base sm:text-lg text-slate-900">Vorteile</h3>
               </div>
               <ul className="space-y-2">
                 {currentArguments.arguments.slice(0, 4).map((arg, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm text-slate-600">
-                    <span className="text-brand-500 mt-1">•</span>
-                    {arg}
+                    <span className="text-brand-500 mt-0.5 flex-shrink-0">•</span>
+                    <span>{arg}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div className="bg-amber-50 rounded-xl p-6 border border-amber-100">
-              <div className="flex items-center gap-2 mb-4">
-                <AlertCircle className="w-5 h-5 text-amber-600" />
-                <h3 className="font-display text-lg text-slate-900">Häufige Bedenken</h3>
+            {/* Häufige Bedenken */}
+            <div className="bg-amber-50 rounded-xl p-4 sm:p-6 border border-amber-100">
+              <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center">
+                  <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600" />
+                </div>
+                <h3 className="font-display text-base sm:text-lg text-slate-900">Häufige Bedenken</h3>
               </div>
               <ul className="space-y-3">
                 {currentArguments.objections.slice(0, 2).map((obj, i) => (
                   <li key={i} className="text-sm">
                     <div className="font-medium text-slate-700 mb-1">{obj.objection}</div>
-                    <div className="text-slate-500">{obj.answer}</div>
+                    <div className="text-slate-500 leading-relaxed">{obj.answer}</div>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div className="bg-slate-50 rounded-xl p-6 border border-slate-200">
-              <div className="flex items-center gap-2 mb-4">
-                <HelpCircle className="w-5 h-5 text-slate-600" />
-                <h3 className="font-display text-lg text-slate-900">Geeignet für</h3>
+            {/* Geeignet für */}
+            <div className="bg-slate-50 rounded-xl p-4 sm:p-6 border border-slate-200 sm:col-span-2 lg:col-span-1">
+              <div className="flex items-center gap-2 mb-3 sm:mb-4">
+                <div className="w-8 h-8 bg-slate-200 rounded-lg flex items-center justify-center">
+                  <HelpCircle className="w-4 h-4 sm:w-5 sm:h-5 text-slate-600" />
+                </div>
+                <h3 className="font-display text-base sm:text-lg text-slate-900">Geeignet für</h3>
               </div>
-              <ul className="space-y-2">
+              <ul className="space-y-2 sm:grid sm:grid-cols-2 lg:block sm:gap-2 lg:space-y-2">
                 {currentArguments.suitableFor.map((item, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm text-slate-600">
                     <Check className="w-4 h-4 text-brand-500 mt-0.5 flex-shrink-0" />
-                    {item}
+                    <span>{item}</span>
                   </li>
                 ))}
               </ul>
@@ -132,8 +147,9 @@ export default function PropertiesSection() {
           </div>
         )}
 
+        {/* Property Grid */}
         {currentProperties.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {currentProperties.map((property) => (
               <PropertyCard
                 key={property.id}
@@ -143,23 +159,28 @@ export default function PropertiesSection() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-16 bg-slate-50 rounded-2xl">
-            <p className="text-slate-500 mb-4">
-              Aktuell keine Objekte in dieser Kategorie verfügbar.
+          <div className="text-center py-12 sm:py-16 bg-slate-50 rounded-2xl">
+            <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <HelpCircle className="w-8 h-8 text-slate-400" />
+            </div>
+            <p className="text-slate-600 mb-2 font-medium">
+              Keine Objekte verfügbar
             </p>
-            <p className="text-sm text-slate-400">
-              Kontaktieren Sie uns für aktuelle Angebote.
+            <p className="text-sm text-slate-500 max-w-sm mx-auto">
+              Aktuell keine Objekte in dieser Kategorie. Kontaktieren Sie uns für aktuelle Angebote.
             </p>
           </div>
         )}
 
-        <div className="mt-8 p-4 bg-slate-50 rounded-xl text-sm text-slate-500">
+        {/* Disclaimer */}
+        <div className="mt-6 sm:mt-8 p-3 sm:p-4 bg-slate-50 rounded-xl text-xs sm:text-sm text-slate-500">
           <strong>Hinweis:</strong> Die angezeigten Preise sind Richtwerte und können je nach 
           Einheit, Etage und aktueller Verfügbarkeit variieren. Verbindliche Preise erhalten 
           Sie auf Anfrage.
         </div>
       </div>
 
+      {/* Property Modal */}
       {selectedProperty && (
         <PropertyModal
           property={selectedProperty}

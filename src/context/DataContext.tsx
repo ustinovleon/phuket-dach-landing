@@ -1,8 +1,8 @@
 import { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import type { ReactNode } from 'react';
 import type { Property, Lead, User, StatusCategory } from '../types';
-import { demoProperties, faqItems } from '../data/demo-data';
-import { isFirebaseConfigured, getFirebase } from '../firebase/firebase';
+import { faqItems } from '../data/demo-data';
+import { getFirebase } from '../firebase/firebase';
 import {
   addDoc,
   collection,
@@ -24,9 +24,6 @@ import {
   signOut,
 } from 'firebase/auth';
 import type { User as FirebaseUser } from 'firebase/auth';
-
-// Demo mode runs without Firebase (e.g., on first upload or for local prototyping)
-const DEMO_MODE = !isFirebaseConfigured;
 
 interface DataContextType {
   properties: Property[];
@@ -113,9 +110,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
     };
   };
 
-  // Auth listener (Firebase mode only)
+  // Auth listener
   useEffect(() => {
-    if (DEMO_MODE) return;
     try {
       const { auth } = getFirebase();
       const unsub = onAuthStateChanged(auth, (u) => {
@@ -132,24 +128,14 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
   // Data subscriptions
   useEffect(() => {
-    // DEMO mode: load demo data. Admin sees all, public sees published only.
-    if (DEMO_MODE) {
-      const list = isAdmin ? demoProperties : demoProperties.filter(p => p.isPublished);
-      setProperties(list);
-      setLeads([]);
-      setIsLoading(false);
-      setError(null);
-      return;
-    }
-
-    // Firebase mode
+    // Firebase mode only - no demo data
     let db;
     try {
       db = getFirebase().db;
     } catch (err: any) {
       console.error('Firebase init error:', err);
       setError(err?.message || 'Firebase nicht konfiguriert');
-      setProperties(demoProperties.filter(p => p.isPublished));
+      setProperties([]);
       setIsLoading(false);
       return;
     }
@@ -171,19 +157,14 @@ export function DataProvider({ children }: { children: ReactNode }) {
         q,
         (snap: QuerySnapshot<DocumentData>) => {
           const list = snap.docs.map(d => mapPropertyDoc(d.id, d.data()));
-          // If Firebase is configured but no published properties exist yet,
-          // fall back to demo data to avoid an empty catalog.
-          if (list.length === 0) {
-            setProperties(demoProperties.filter(p => p.isPublished));
-          } else {
-            setProperties(list);
-          }
+          setProperties(list);
           setError(null);
           setIsLoading(false);
         },
         (err) => {
+          console.error('Firestore error:', err);
           setError(err?.message || 'Firestore Fehler beim Laden der Objekte.');
-          setProperties(demoProperties.filter(p => p.isPublished));
+          setProperties([]);
           setIsLoading(false);
         }
       );
@@ -238,13 +219,12 @@ export function DataProvider({ children }: { children: ReactNode }) {
         );
       } catch (e: any) {
         // Some environments surface request cancellation as AbortError.
-        // Do not block rendering - fall back to demo data and expose the message.
         if (cancelled) return;
         const msg = e?.message || 'Unbekannter Fehler beim Initialisieren der Admin-Sitzung.';
         setError(msg);
         setUser(null);
         setLeads([]);
-        setProperties(demoProperties.filter(p => p.isPublished));
+        setProperties([]);
         setIsLoading(false);
       }
     })();
@@ -263,93 +243,45 @@ export function DataProvider({ children }: { children: ReactNode }) {
     '2027': properties.filter(p => p.statusCategory === '2027').sort((a, b) => a.order - b.order),
   };
 
-  // Admin functions (demo mode stores in localStorage)
+  // Admin functions - Firebase only
   const addProperty = async (propertyData: Omit<Property, 'id' | 'createdAt' | 'updatedAt'>) => {
-    const newProperty: Property = {
+    const { db } = getFirebase();
+    await addDoc(collection(db, 'properties'), {
       ...propertyData,
-      id: `property-${Date.now()}`,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    
-    if (DEMO_MODE) {
-      setProperties(prev => [...prev, newProperty]);
-      localStorage.setItem('phuket-properties', JSON.stringify([...properties, newProperty]));
-    } else {
-      const { db } = getFirebase();
-      await addDoc(collection(db, 'properties'), {
-        ...propertyData,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
-    }
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
   };
 
   const updateProperty = async (id: string, data: Partial<Property>) => {
-    if (DEMO_MODE) {
-      setProperties(prev => prev.map(p => 
-        p.id === id ? { ...p, ...data, updatedAt: new Date() } : p
-      ));
-    } else {
-      const { db } = getFirebase();
-      const ref = doc(db, 'properties', id);
-      await updateDoc(ref, {
-        ...data,
-        updatedAt: serverTimestamp(),
-      } as any);
-    }
+    const { db } = getFirebase();
+    const ref = doc(db, 'properties', id);
+    await updateDoc(ref, {
+      ...data,
+      updatedAt: serverTimestamp(),
+    } as any);
   };
 
   const deleteProperty = async (id: string) => {
-    if (DEMO_MODE) {
-      setProperties(prev => prev.filter(p => p.id !== id));
-    } else {
-      const { db } = getFirebase();
-      await deleteDoc(doc(db, 'properties', id));
-    }
+    const { db } = getFirebase();
+    await deleteDoc(doc(db, 'properties', id));
   };
 
   const reorderProperties = async (_category: StatusCategory, orderedIds: string[]) => {
-    if (DEMO_MODE) {
-      setProperties(prev => {
-        const updated = [...prev];
-        orderedIds.forEach((id, index) => {
-          const propIndex = updated.findIndex(p => p.id === id);
-          if (propIndex !== -1) {
-            updated[propIndex] = { ...updated[propIndex], order: index };
-          }
-        });
-        return updated;
-      });
-    } else {
-      const { db } = getFirebase();
-      const batch = writeBatch(db);
-      orderedIds.forEach((id, index) => {
-        batch.update(doc(db, 'properties', id), { order: index, updatedAt: serverTimestamp() });
-      });
-      await batch.commit();
-    }
+    const { db } = getFirebase();
+    const batch = writeBatch(db);
+    orderedIds.forEach((id, index) => {
+      batch.update(doc(db, 'properties', id), { order: index, updatedAt: serverTimestamp() });
+    });
+    await batch.commit();
   };
 
   const submitLead = async (leadData: Omit<Lead, 'id' | 'createdAt'>) => {
-    const newLead: Lead = {
+    const { db } = getFirebase();
+    await addDoc(collection(db, 'leads'), {
       ...leadData,
-      id: `lead-${Date.now()}`,
-      createdAt: new Date(),
-    };
-
-    if (DEMO_MODE) {
-      // Store in localStorage for demo
-      const existingLeads = JSON.parse(localStorage.getItem('phuket-leads') || '[]');
-      localStorage.setItem('phuket-leads', JSON.stringify([...existingLeads, newLead]));
-      console.log('Lead submitted (demo mode):', newLead);
-    } else {
-      const { db } = getFirebase();
-      await addDoc(collection(db, 'leads'), {
-        ...leadData,
-        createdAt: serverTimestamp(),
-      });
-    }
+      createdAt: serverTimestamp(),
+    });
   };
 
   // Auth functions
@@ -373,25 +305,10 @@ export function DataProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = async () => {
-    if (DEMO_MODE) {
-      setUser(null);
-      localStorage.removeItem('phuket-user');
-    } else {
-      const { auth } = getFirebase();
-      await signOut(auth);
-      setUser(null);
-    }
+    const { auth } = getFirebase();
+    await signOut(auth);
+    setUser(null);
   };
-
-  // Check for existing session
-  useEffect(() => {
-    if (DEMO_MODE) {
-      const savedUser = localStorage.getItem('phuket-user');
-      if (savedUser) {
-        setUser(JSON.parse(savedUser));
-      }
-    }
-  }, []);
 
   return (
     <DataContext.Provider value={{
