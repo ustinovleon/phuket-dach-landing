@@ -170,6 +170,8 @@ export default function AdminPage() {
     return eur >= 100_000 ? Math.round(eur / 1_000) * 1_000 : Math.round(eur / 500) * 500;
   };
 
+  const [isSaving, setIsSaving] = useState(false);
+
   const handleSave = async () => {
     setFormError('');
     if (!draft.projectName?.trim()) return setFormError('Projektname ist erforderlich');
@@ -212,12 +214,20 @@ export default function AdminPage() {
       order: Number(draft.order || 0),
     };
 
-    if (editing) {
-      await updateProperty(editing.id, payload);
-    } else {
-      await addProperty(payload);
+    setIsSaving(true);
+    try {
+      if (editing) {
+        await updateProperty(editing.id, payload);
+      } else {
+        await addProperty(payload);
+      }
+      setIsEditorOpen(false);
+    } catch (err: any) {
+      console.error('Save error:', err);
+      setFormError(`Fehler beim Speichern: ${err.message || 'Unbekannter Fehler'}. Bitte Firestore-Regeln prüfen.`);
+    } finally {
+      setIsSaving(false);
     }
-    setIsEditorOpen(false);
   };
   
   const handleTogglePublish = async (property: Property) => {
@@ -372,105 +382,125 @@ export default function AdminPage() {
       </div>
 
       {isEditorOpen && (
-        <div className="fixed inset-0 bg-slate-900/40 flex items-end md:items-center justify-center p-4 z-50">
-          <div className="bg-white w-full max-w-3xl rounded-2xl shadow-xl overflow-hidden">
-            <div className="p-4 border-b flex items-center justify-between">
-              <div>
-                <div className="font-display text-lg text-slate-900">
-                  {editing ? 'Objekt bearbeiten' : 'Neues Objekt'}
+        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 overflow-y-auto">
+          <div className="min-h-full flex items-start sm:items-center justify-center p-4 py-8">
+            <div className="bg-white w-full max-w-3xl rounded-2xl shadow-xl flex flex-col max-h-[90vh]">
+              {/* Header - sticky */}
+              <div className="p-4 border-b flex items-center justify-between flex-shrink-0">
+                <div>
+                  <div className="font-display text-lg text-slate-900">
+                    {editing ? 'Objekt bearbeiten' : 'Neues Objekt'}
+                  </div>
+                  <div className="text-sm text-slate-500">Pflichtfelder: Projekt, Lage, Preis (THB), Bilder</div>
                 </div>
-                <div className="text-sm text-slate-500">Pflichtfelder: Projekt, Lage, Preis (THB), Bilder</div>
+                <button onClick={() => setIsEditorOpen(false)} className="btn-secondary !py-2">Schließen</button>
               </div>
-              <button onClick={() => setIsEditorOpen(false)} className="btn-secondary !py-2">Schließen</button>
-            </div>
 
-            <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-              {formError && (
-                <div className="md:col-span-2 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-                  {formError}
+              {/* Scrollable Content */}
+              <div className="p-4 overflow-y-auto flex-1">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {formError && (
+                    <div className="md:col-span-2 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                      {formError}
+                    </div>
+                  )}
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Projektname</label>
+                    <input className="input-field" value={draft.projectName} onChange={(e) => setDraft({ ...draft, projectName: e.target.value })} />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Lage / Area</label>
+                    <input className="input-field" value={draft.area} onChange={(e) => setDraft({ ...draft, area: e.target.value })} />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Kategorie</label>
+                    <select className="input-field" value={draft.statusCategory} onChange={(e) => setDraft({ ...draft, statusCategory: e.target.value })}>
+                      <option value="READY">Sofort verfügbar</option>
+                      <option value="2026">Fertigstellung 2026</option>
+                      <option value="2027">Fertigstellung 2027</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Objekttyp</label>
+                    <select className="input-field" value={draft.propertyType} onChange={(e) => setDraft({ ...draft, propertyType: e.target.value })}>
+                      <option value="CONDO">Condo</option>
+                      <option value="VILLA">Villa</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Ownership (Juristisch)</label>
+                    <select className="input-field" value={draft.ownership} onChange={(e) => setDraft({ ...draft, ownership: e.target.value })}>
+                      <option value="LEASEHOLD">Leasehold</option>
+                      <option value="FREEHOLD">Freehold</option>
+                      <option value="MIXED">Mixed</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Fertigstellung (YYYY-MM, optional)</label>
+                    <input className="input-field" value={draft.completion || ''} placeholder="2026-12" onChange={(e) => setDraft({ ...draft, completion: e.target.value || null })} />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Größe von (m²)</label>
+                    <input type="number" className="input-field" value={draft.sizeSqmFrom} onChange={(e) => setDraft({ ...draft, sizeSqmFrom: e.target.value })} />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Größe bis (m²)</label>
+                    <input type="number" className="input-field" value={draft.sizeSqmTo} onChange={(e) => setDraft({ ...draft, sizeSqmTo: e.target.value })} />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Preis ab (THB)</label>
+                    <input type="number" className="input-field" value={draft.priceFromTHB} onChange={(e) => setDraft({ ...draft, priceFromTHB: e.target.value, priceFromEUR: computeNiceEUR(Number(e.target.value || 0)) })} />
+                    <div className="text-xs text-slate-500 mt-1">EUR-Anzeige wird automatisch berechnet (Referenzkurs 01.01.2026)</div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Preis ab (EUR, indikativ)</label>
+                    <input className="input-field" value={formatCurrency(Number(draft.priceFromEUR || 0))} readOnly />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Bilder (1 URL pro Zeile)</label>
+                    <textarea className="input-field min-h-[96px]" value={draft.imagesText} onChange={(e) => setDraft({ ...draft, imagesText: e.target.value })} />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Highlights (1 Punkt pro Zeile, optional)</label>
+                    <textarea className="input-field min-h-[96px]" value={draft.highlightsText} onChange={(e) => setDraft({ ...draft, highlightsText: e.target.value })} />
+                  </div>
+
+                  <div className="md:col-span-2 flex items-center gap-2">
+                    <input 
+                      type="checkbox" 
+                      id="isPublished"
+                      checked={Boolean(draft.isPublished)} 
+                      onChange={(e) => setDraft({ ...draft, isPublished: e.target.checked })} 
+                      className="w-4 h-4 text-brand-600 rounded"
+                    />
+                    <label htmlFor="isPublished" className="text-sm text-slate-700">
+                      Veröffentlicht (auf der Website sichtbar)
+                    </label>
+                  </div>
                 </div>
-              )}
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Projektname</label>
-                <input className="input-field" value={draft.projectName} onChange={(e) => setDraft({ ...draft, projectName: e.target.value })} />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Lage / Area</label>
-                <input className="input-field" value={draft.area} onChange={(e) => setDraft({ ...draft, area: e.target.value })} />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Kategorie</label>
-                <select className="input-field" value={draft.statusCategory} onChange={(e) => setDraft({ ...draft, statusCategory: e.target.value })}>
-                  <option value="READY">Sofort verfügbar</option>
-                  <option value="2026">Fertigstellung 2026</option>
-                  <option value="2027">Fertigstellung 2027</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Objekttyp</label>
-                <select className="input-field" value={draft.propertyType} onChange={(e) => setDraft({ ...draft, propertyType: e.target.value })}>
-                  <option value="CONDO">Condo</option>
-                  <option value="VILLA">Villa</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Ownership (Juristisch)</label>
-                <select className="input-field" value={draft.ownership} onChange={(e) => setDraft({ ...draft, ownership: e.target.value })}>
-                  <option value="LEASEHOLD">Leasehold</option>
-                  <option value="FREEHOLD">Freehold</option>
-                  <option value="MIXED">Mixed</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Fertigstellung (YYYY-MM, optional)</label>
-                <input className="input-field" value={draft.completion || ''} placeholder="2026-12" onChange={(e) => setDraft({ ...draft, completion: e.target.value || null })} />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Größe von (m²)</label>
-                <input type="number" className="input-field" value={draft.sizeSqmFrom} onChange={(e) => setDraft({ ...draft, sizeSqmFrom: e.target.value })} />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Größe bis (m²)</label>
-                <input type="number" className="input-field" value={draft.sizeSqmTo} onChange={(e) => setDraft({ ...draft, sizeSqmTo: e.target.value })} />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Preis ab (THB)</label>
-                <input type="number" className="input-field" value={draft.priceFromTHB} onChange={(e) => setDraft({ ...draft, priceFromTHB: e.target.value, priceFromEUR: computeNiceEUR(Number(e.target.value || 0)) })} />
-                <div className="text-xs text-slate-500 mt-1">EUR-Anzeige wird automatisch berechnet (Referenzkurs 01.01.2026)</div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Preis ab (EUR, indikativ)</label>
-                <input className="input-field" value={formatCurrency(Number(draft.priceFromEUR || 0))} readOnly />
-              </div>
-
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-slate-700 mb-1">Bilder (1 URL pro Zeile)</label>
-                <textarea className="input-field min-h-[96px]" value={draft.imagesText} onChange={(e) => setDraft({ ...draft, imagesText: e.target.value })} />
-              </div>
-
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-slate-700 mb-1">Highlights (1 Punkt pro Zeile, optional)</label>
-                <textarea className="input-field min-h-[96px]" value={draft.highlightsText} onChange={(e) => setDraft({ ...draft, highlightsText: e.target.value })} />
-              </div>
-
-              <div className="md:col-span-2 flex items-center justify-between">
-                <label className="flex items-center gap-2 text-sm text-slate-700">
-                  <input type="checkbox" checked={Boolean(draft.isPublished)} onChange={(e) => setDraft({ ...draft, isPublished: e.target.checked })} />
-                  Veröffentlicht
-                </label>
-                <div className="flex gap-2">
-                  <button onClick={() => setIsEditorOpen(false)} className="btn-secondary">Abbrechen</button>
-                  <button onClick={handleSave} className="btn-primary">Speichern</button>
+              {/* Footer - sticky */}
+              <div className="p-4 border-t bg-slate-50 flex-shrink-0">
+                <div className="flex gap-3 justify-end">
+                  <button onClick={() => setIsEditorOpen(false)} className="btn-secondary" disabled={isSaving}>
+                    Abbrechen
+                  </button>
+                  <button onClick={handleSave} className="btn-primary" disabled={isSaving}>
+                    {isSaving ? 'Speichern...' : 'Speichern'}
+                  </button>
                 </div>
               </div>
             </div>
