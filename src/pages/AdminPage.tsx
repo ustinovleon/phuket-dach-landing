@@ -208,9 +208,17 @@ export default function AdminPage() {
       docs: [],
       images,
       operatorModel: null,
-      transparency: undefined,
+      
+      // БЫЛО: transparency: undefined,
+      // СТАЛО:
+      transparency: null, 
+
       description: '',
-      location: undefined,
+      
+      // БЫЛО: location: undefined,
+      // СТАЛО:
+      location: null,
+
       isPublished: Boolean(draft.isPublished),
       order: Number(draft.order || 0),
     };
