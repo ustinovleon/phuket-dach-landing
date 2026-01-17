@@ -7,11 +7,34 @@ import { LogOut, Trash2, Eye, EyeOff, Settings, Users, Plus, Pencil, AlertCircle
 export default function AdminPage() {
   const { user, logout, login, properties, leads, addProperty, updateProperty, deleteProperty, error } = useData();
   
+  // ALL HOOKS MUST BE AT THE TOP - before any conditional returns
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [loginError, setLoginError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeTab, setActiveTab] = useState<'properties' | 'leads'>('properties');
+  const [isEditorOpen, setIsEditorOpen] = useState(false);
+  const [editing, setEditing] = useState<Property | null>(null);
+  const [formError, setFormError] = useState('');
+
+  const emptyDraft = useMemo(() => ({
+    statusCategory: 'READY' as const,
+    projectName: '',
+    area: '',
+    propertyType: 'CONDO' as const,
+    ownership: 'LEASEHOLD' as const,
+    completion: null as string | null,
+    sizeSqmFrom: 0,
+    sizeSqmTo: 0,
+    priceFromTHB: 0,
+    priceFromEUR: 0,
+    highlightsText: '',
+    imagesText: '',
+    isPublished: false,
+    order: 0,
+  }), []);
+
+  const [draft, setDraft] = useState<any>(emptyDraft);
   
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -110,29 +133,6 @@ export default function AdminPage() {
   }
   
   const leadsCount = leads.length;
-
-  const [isEditorOpen, setIsEditorOpen] = useState(false);
-  const [editing, setEditing] = useState<Property | null>(null);
-  const [formError, setFormError] = useState('');
-
-  const emptyDraft = useMemo(() => ({
-    statusCategory: 'READY' as const,
-    projectName: '',
-    area: '',
-    propertyType: 'CONDO' as const,
-    ownership: 'LEASEHOLD' as const,
-    completion: null as string | null,
-    sizeSqmFrom: 0,
-    sizeSqmTo: 0,
-    priceFromTHB: 0,
-    priceFromEUR: 0,
-    highlightsText: '',
-    imagesText: '',
-    isPublished: false,
-    order: 0,
-  }), []);
-
-  const [draft, setDraft] = useState<any>(emptyDraft);
 
   const openCreate = () => {
     setEditing(null);
