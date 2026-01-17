@@ -7,7 +7,7 @@ import { LogOut, Trash2, Eye, EyeOff, Settings, Users, Plus, Pencil, AlertCircle
 export default function AdminPage() {
   const { user, logout, login, properties, leads, addProperty, updateProperty, deleteProperty, error } = useData();
   
-  // ALL HOOKS MUST BE AT THE TOP - before any conditional returns
+  // --- ИСПРАВЛЕНИЕ: Все хуки теперь в начале компонента ---
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [loginError, setLoginError] = useState('');
@@ -16,6 +16,9 @@ export default function AdminPage() {
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [editing, setEditing] = useState<Property | null>(null);
   const [formError, setFormError] = useState('');
+  
+  // Перенесено сюда (раньше было внизу и вызывало ошибку):
+  const [isSaving, setIsSaving] = useState(false);
 
   const emptyDraft = useMemo(() => ({
     statusCategory: 'READY' as const,
@@ -169,8 +172,6 @@ export default function AdminPage() {
     if (eur >= 1_000_000) return Math.round((eur / 1_000_000) * 10) / 10 * 1_000_000;
     return eur >= 100_000 ? Math.round(eur / 1_000) * 1_000 : Math.round(eur / 500) * 500;
   };
-
-  const [isSaving, setIsSaving] = useState(false);
 
   const handleSave = async () => {
     setFormError('');
