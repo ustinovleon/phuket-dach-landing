@@ -116,12 +116,18 @@ export function DataProvider({ children }: { children: ReactNode }) {
   // Auth listener (Firebase mode only)
   useEffect(() => {
     if (DEMO_MODE) return;
-    const { auth } = getFirebase();
-    const unsub = onAuthStateChanged(auth, (u) => {
-      setFbUser(u);
-      if (!u) setUser(null);
-    });
-    return () => unsub();
+    try {
+      const { auth } = getFirebase();
+      const unsub = onAuthStateChanged(auth, (u) => {
+        setFbUser(u);
+        if (!u) setUser(null);
+      });
+      return () => unsub();
+    } catch (err: any) {
+      console.error('Firebase auth init error:', err);
+      setError(err?.message || 'Firebase Authentifizierung fehlgeschlagen');
+      setFbUser(null);
+    }
   }, []);
 
   // Data subscriptions
@@ -137,7 +143,17 @@ export function DataProvider({ children }: { children: ReactNode }) {
     }
 
     // Firebase mode
-    const { db } = getFirebase();
+    let db;
+    try {
+      db = getFirebase().db;
+    } catch (err: any) {
+      console.error('Firebase init error:', err);
+      setError(err?.message || 'Firebase nicht konfiguriert');
+      setProperties(demoProperties.filter(p => p.isPublished));
+      setIsLoading(false);
+      return;
+    }
+    
     setIsLoading(true);
 
     // While auth state is still resolving, do nothing.

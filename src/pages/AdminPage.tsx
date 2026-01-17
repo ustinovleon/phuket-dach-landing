@@ -2,25 +2,51 @@ import { useMemo, useState } from 'react';
 import { useData } from '../context/DataContext';
 import type { Property } from '../types';
 import { formatCurrency, getCategoryLabel, thbToEur } from '../utils/format';
-import { LogOut, Trash2, Eye, EyeOff, Settings, Users, Plus, Pencil } from 'lucide-react';
+import { LogOut, Trash2, Eye, EyeOff, Settings, Users, Plus, Pencil, AlertCircle } from 'lucide-react';
 
 export default function AdminPage() {
-  const { user, logout, login, properties, leads, addProperty, updateProperty, deleteProperty } = useData();
+  const { user, logout, login, properties, leads, addProperty, updateProperty, deleteProperty, error } = useData();
   
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [loginError, setLoginError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeTab, setActiveTab] = useState<'properties' | 'leads'>('properties');
   
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginError('');
+    setIsSubmitting(true);
     try {
       await login(loginEmail, loginPassword);
     } catch (error: any) {
+      console.error('Login error:', error);
       setLoginError(error.message || 'Login fehlgeschlagen');
+    } finally {
+      setIsSubmitting(false);
     }
   };
+  
+  // Show error state
+  if (error && !user) {
+    return (
+      <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md text-center">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <AlertCircle className="w-8 h-8 text-red-600" />
+          </div>
+          <h1 className="font-display text-xl text-slate-900 mb-2">Fehler</h1>
+          <p className="text-slate-600 mb-4">{error}</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="btn-primary"
+          >
+            Seite neu laden
+          </button>
+        </div>
+      </div>
+    );
+  }
   
   if (!user) {
     return (
@@ -47,6 +73,8 @@ export default function AdminPage() {
                 value={loginEmail}
                 onChange={(e) => setLoginEmail(e.target.value)}
                 className="input-field"
+                disabled={isSubmitting}
+                required
               />
             </div>
             
@@ -57,11 +85,25 @@ export default function AdminPage() {
                 value={loginPassword}
                 onChange={(e) => setLoginPassword(e.target.value)}
                 className="input-field"
+                disabled={isSubmitting}
+                required
               />
             </div>
             
-            <button type="submit" className="w-full btn-primary !py-3">Anmelden</button>
+            <button 
+              type="submit" 
+              className="w-full btn-primary !py-3 disabled:opacity-50"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Wird angemeldet...' : 'Anmelden'}
+            </button>
           </form>
+          
+          <div className="mt-4">
+            <a href="/" className="text-sm text-slate-500 hover:text-brand-600">
+              ← Zurück zur Startseite
+            </a>
+          </div>
         </div>
       </div>
     );
