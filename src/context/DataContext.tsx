@@ -3,7 +3,6 @@ import type { ReactNode } from 'react';
 import type { Property, Lead, User, StatusCategory } from '../types';
 import { demoProperties, faqItems } from '../data/demo-data';
 import { isFirebaseConfigured, getFirebase } from '../firebase/firebase';
-
 import {
   addDoc,
   collection,
@@ -16,11 +15,14 @@ import {
   serverTimestamp,
   updateDoc,
   where,
-  writeBatch,
+  writeBatch
 } from 'firebase/firestore';
 import type { DocumentData, QuerySnapshot } from 'firebase/firestore';
-
-import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import {
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut,
+} from 'firebase/auth';
 import type { User as FirebaseUser } from 'firebase/auth';
 
 // Demo mode runs without Firebase (e.g., on first upload or for local prototyping)
@@ -334,41 +336,24 @@ export function DataProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // Auth functions (demo mode uses hardcoded credentials)
+  // Auth functions
   const login = async (email: string, password: string) => {
-    if (DEMO_MODE) {
-      // Demo credentials
-      if (email === 'admin@demo.com' && password === 'demo123') {
-        const demoUser: User = {
-          uid: 'demo-admin',
-          email: 'admin@demo.com',
-          role: 'admin',
-          displayName: 'Demo Admin',
-          createdAt: new Date(),
-        };
-        setUser(demoUser);
-        localStorage.setItem('phuket-user', JSON.stringify(demoUser));
-      } else {
-        throw new Error('Ungültige Anmeldedaten');
-      }
-    } else {
-      const { auth, db } = getFirebase();
-      const cred = await signInWithEmailAndPassword(auth, email, password);
-      const adminRef = doc(db, 'admins', cred.user.uid);
-      const adminSnap = await getDoc(adminRef);
-      if (!adminSnap.exists()) {
-        throw new Error('Kein Admin-Zugriff. Bitte Admin-Rechte im Firebase Console setzen.');
-      }
-      const role = adminSnap.data().role as User['role'];
-      const appUser: User = {
-        uid: cred.user.uid,
-        email: cred.user.email || email,
-        role: role === 'admin' || role === 'editor' ? role : 'editor',
-        displayName: cred.user.displayName || undefined,
-        createdAt: new Date(),
-      };
-      setUser(appUser);
+    const { auth, db } = getFirebase();
+    const cred = await signInWithEmailAndPassword(auth, email, password);
+    const adminRef = doc(db, 'admins', cred.user.uid);
+    const adminSnap = await getDoc(adminRef);
+    if (!adminSnap.exists()) {
+      throw new Error('Kein Admin-Zugriff. Bitte Admin-Rechte im Firebase Console setzen.');
     }
+    const role = adminSnap.data().role as User['role'];
+    const appUser: User = {
+      uid: cred.user.uid,
+      email: cred.user.email || email,
+      role: role === 'admin' || role === 'editor' ? role : 'editor',
+      displayName: cred.user.displayName || undefined,
+      createdAt: new Date(),
+    };
+    setUser(appUser);
   };
 
   const logout = async () => {
