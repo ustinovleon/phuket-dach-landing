@@ -4,7 +4,8 @@ import type { FirebaseApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import type { Auth } from 'firebase/auth';
 
-import { getFirestore } from 'firebase/firestore';
+// Мы заменили getFirestore на initializeFirestore
+import { initializeFirestore } from 'firebase/firestore'; 
 import type { Firestore } from 'firebase/firestore';
 
 import { getStorage } from 'firebase/storage';
@@ -44,7 +45,12 @@ export function getFirebase(): FirebaseServices {
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
-  const db = getFirestore(app);
+  
+  // ИСПРАВЛЕНИЕ: Инициализируем Firestore с настройкой ignoreUndefinedProperties
+  const db = initializeFirestore(app, {
+    ignoreUndefinedProperties: true
+  });
+  
   const storage = getStorage(app);
 
   _services = { app, auth, db, storage };
