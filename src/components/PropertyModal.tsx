@@ -35,6 +35,7 @@ export default function PropertyModal({ property, onClose }: PropertyModalProps)
 
   const handleWhatsApp = () => {
     trackEvent('whatsapp_click', { location: 'property_modal', propertyId: property.id });
+    // Логика верная: подставляем property.projectName
     const message = `Hallo, ich interessiere mich für das Objekt "${property.projectName}" in ${property.area}. Bitte senden Sie mir weitere Informationen.`;
     window.open(getWhatsAppLink(WHATSAPP_NUMBER, message), '_blank');
   };
@@ -60,7 +61,8 @@ export default function PropertyModal({ property, onClose }: PropertyModalProps)
     : `${property.sizeSqmFrom}–${property.sizeSqmTo} m²`;
 
   return (
-    <div className="fixed inset-0 z-50">
+    // ИЗМЕНЕНИЕ: z-50 заменено на z-[100], чтобы модальное окно было выше хедера (который z-50)
+    <div className="fixed inset-0 z-[100]">
       {/* Backdrop */}
       <div 
         className="fixed inset-0 bg-black/60 backdrop-blur-sm" 
@@ -68,8 +70,8 @@ export default function PropertyModal({ property, onClose }: PropertyModalProps)
       />
       
       {/* Modal Container - full screen on mobile */}
-      <div className="fixed inset-0 sm:inset-4 md:inset-8 lg:inset-12 flex items-stretch sm:items-center justify-center">
-        <div className="relative bg-white w-full h-full sm:h-auto sm:max-h-[90vh] sm:rounded-2xl shadow-2xl overflow-hidden flex flex-col sm:max-w-4xl">
+      <div className="fixed inset-0 sm:inset-4 md:inset-8 lg:inset-12 flex items-stretch sm:items-center justify-center pointer-events-none">
+        <div className="relative bg-white w-full h-full sm:h-auto sm:max-h-[90vh] sm:rounded-2xl shadow-2xl overflow-hidden flex flex-col sm:max-w-4xl pointer-events-auto">
           
           {/* Close Button */}
           <button
@@ -159,6 +161,7 @@ export default function PropertyModal({ property, onClose }: PropertyModalProps)
                         {formatCurrency(property.priceFromEUR)}
                       </div>
                     </div>
+                    {/* Кнопка WhatsApp внутри контента */}
                     <button
                       onClick={handleWhatsApp}
                       className="btn-whatsapp text-sm py-2 px-4"
@@ -170,7 +173,7 @@ export default function PropertyModal({ property, onClose }: PropertyModalProps)
                 </div>
               </div>
 
-              {/* Key Info Grid - 2 columns on mobile, 4 on desktop */}
+              {/* ... Остальной контент без изменений ... */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
                 <div className="bg-slate-50 rounded-xl p-3 sm:p-4">
                   <Maximize2 className="w-4 h-4 sm:w-5 sm:h-5 text-brand-500 mb-1.5 sm:mb-2" />
@@ -294,6 +297,7 @@ export default function PropertyModal({ property, onClose }: PropertyModalProps)
           {/* Sticky Footer Actions - always visible on mobile */}
           <div className="flex-shrink-0 p-4 sm:p-6 border-t border-slate-200 bg-white">
             <div className="flex flex-col sm:flex-row gap-3">
+              {/* Кнопка WhatsApp в футере модального окна */}
               <button
                 onClick={handleWhatsApp}
                 className="btn-whatsapp flex-1 py-3"
