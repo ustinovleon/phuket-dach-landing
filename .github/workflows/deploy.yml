@@ -49,6 +49,7 @@ jobs:
           cp ./public/agb.html ./dist/
           cp ./public/robots.txt ./dist/
           cp ./public/sitemap.xml ./dist/
+          cp ./public/google656c04074e409f01.html ./dist/
           touch ./dist/.nojekyll
           echo "dach.phuketinvest.pro" > ./dist/CNAME
 
