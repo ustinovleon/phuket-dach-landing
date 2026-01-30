@@ -2,6 +2,28 @@
 <html lang="de">
   <head>
     <meta charset="UTF-8" />
+
+    <!-- Google tag (gtag.js) - Google Analytics 4 -->
+    <!-- WICHTIG: Ersetzen Sie G-XXXXXXXXXX durch Ihre echte Google Analytics Measurement ID -->
+    <!-- Anleitung: https://analytics.google.com/ -> Verwaltung -> Datenstreams -> Mess-ID kopieren -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
+
+    <!-- Google Search Console Verifizierung -->
+    <!-- WICHTIG: Ersetzen Sie den content-Wert durch Ihren Google Search Console Verifizierungscode -->
+    <!-- Anleitung: https://search.google.com/search-console -> Property hinzufuegen -> HTML-Tag-Methode -->
+    <meta name="google-site-verification" content="IHRE_GOOGLE_VERIFICATION_ID" />
+
+    <!-- Bing Webmaster Tools Verifizierung -->
+    <!-- WICHTIG: Ersetzen Sie den content-Wert durch Ihren Bing Verifizierungscode -->
+    <!-- Anleitung: https://www.bing.com/webmasters -> Site hinzufuegen -> Meta-Tag-Option -->
+    <meta name="msvalidate.01" content="IHRE_BING_VERIFICATION_ID" />
+
     <!-- Yandex.Metrika counter -->
     <script type="text/javascript">
       (function(m,e,t,r,i,k,a){
@@ -13,17 +35,12 @@
       ym(106304478, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
     </script>
     <!-- /Yandex.Metrika counter -->
+
     <!-- Single Page Apps for GitHub Pages - redirect script -->
     <script type="text/javascript">
-      // This script checks to see if a redirect is present in the query string,
-      // converts it back into the correct url and adds it to the browser's history
-      // using window.history.replaceState(...), which won't cause the browser to attempt
-      // to load the new url. When the single page app is loaded further down in this
-      // file, the correct url will be waiting in the browser's history for the single
-      // page app to route accordingly.
       (function(l) {
         if (l.search[1] === '/' ) {
-          var decoded = l.search.slice(1).split('&').map(function(s) { 
+          var decoded = l.search.slice(1).split('&').map(function(s) {
             return s.replace(/~and~/g, '&')
           }).join('?');
           window.history.replaceState(null, null,
@@ -32,19 +49,216 @@
         }
       }(window.location))
     </script>
+
+    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%23326453' width='100' height='100' rx='20'/%3E%3Ctext x='50' y='70' font-size='60' font-family='Georgia' fill='white' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E" />
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%23326453' width='100' height='100' rx='20'/%3E%3Ctext x='50' y='70' font-size='60' font-family='Georgia' fill='white' text-anchor='middle'%3EP%3C/text%3E%3C/svg%3E" />
+
+    <!-- Viewport und Basis Meta -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Phuket Immobilien für DACH-Investoren | Investitionsstrategie 2025</title>
-    <meta name="description" content="Immobilieninvestitionen auf Phuket für deutschsprachige Investoren. Transparenter Prozess, geprüfte Objekte, professionelle Verwaltung. Einstieg ab 100.000 EUR." />
-    <meta name="keywords" content="Phuket Immobilien, Thailand Investment, DACH Investoren, Auslandsimmobilien, Ferienimmobilie Thailand" />
-    <meta property="og:title" content="Phuket Immobilien für DACH-Investoren" />
-    <meta property="og:description" content="Portfoliodiversifikation in Asien. Transparenter Prozess von der Objektauswahl bis zur Verwaltung." />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://dach.phuketinvest.pro/" />
+
+    <!-- Hreflang fuer internationale SEO -->
+    <link rel="alternate" hreflang="de" href="https://dach.phuketinvest.pro/" />
+    <link rel="alternate" hreflang="de-DE" href="https://dach.phuketinvest.pro/" />
+    <link rel="alternate" hreflang="de-AT" href="https://dach.phuketinvest.pro/" />
+    <link rel="alternate" hreflang="de-CH" href="https://dach.phuketinvest.pro/" />
+    <link rel="alternate" hreflang="x-default" href="https://dach.phuketinvest.pro/" />
+
+    <!-- Primaere SEO Meta Tags -->
+    <title>Phuket Immobilien fuer DACH-Investoren | Luxusvillen & Apartments Thailand 2025</title>
+    <meta name="title" content="Phuket Immobilien fuer DACH-Investoren | Luxusvillen & Apartments Thailand 2025" />
+    <meta name="description" content="Exklusive Immobilieninvestitionen auf Phuket fuer deutschsprachige Investoren aus Deutschland, Oesterreich und der Schweiz. Luxusvillen, Apartments und Ferienwohnungen mit garantierter Rendite. Transparenter Kaufprozess, geprueft Objekte, professionelle Verwaltung. Einstieg ab 100.000 EUR." />
+    <meta name="keywords" content="Phuket Immobilien, Thailand Immobilien kaufen, DACH Investoren, Auslandsimmobilien Thailand, Ferienimmobilie Phuket, Luxusvilla Thailand, Apartment Phuket kaufen, Immobilieninvestment Asien, Thailand Kapitalanlage, Renditeimmobilie Phuket, deutschsprachige Immobilienberatung Thailand, Eigentumswohnung Phuket, Villa mit Meerblick Thailand, Investition Thailand Immobilien, Phuket Property Investment" />
+    <meta name="author" content="Phuket Invest Pro" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="language" content="German" />
+    <meta name="revisit-after" content="7 days" />
+    <meta name="geo.region" content="TH-83" />
+    <meta name="geo.placename" content="Phuket, Thailand" />
+    <meta name="geo.position" content="7.8804;98.3923" />
+    <meta name="ICBM" content="7.8804, 98.3923" />
+
+    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://dach.phuketinvest.pro/" />
+    <meta property="og:site_name" content="Phuket Invest Pro - DACH" />
+    <meta property="og:title" content="Phuket Immobilien fuer DACH-Investoren | Luxusvillen & Apartments" />
+    <meta property="og:description" content="Exklusive Immobilieninvestitionen auf Phuket fuer deutschsprachige Investoren. Luxusvillen, Apartments mit garantierter Rendite. Transparenter Kaufprozess ab 100.000 EUR." />
+    <meta property="og:image" content="https://dach.phuketinvest.pro/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Luxusvilla auf Phuket mit Meerblick - Immobilieninvestment fuer DACH-Investoren" />
+    <meta property="og:locale" content="de_DE" />
+    <meta property="og:locale:alternate" content="de_AT" />
+    <meta property="og:locale:alternate" content="de_CH" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://dach.phuketinvest.pro/" />
+    <meta name="twitter:title" content="Phuket Immobilien fuer DACH-Investoren | Luxusvillen & Apartments" />
+    <meta name="twitter:description" content="Exklusive Immobilieninvestitionen auf Phuket fuer deutschsprachige Investoren. Transparenter Kaufprozess, geprueft Objekte ab 100.000 EUR." />
+    <meta name="twitter:image" content="https://dach.phuketinvest.pro/og-image.jpg" />
+    <meta name="twitter:image:alt" content="Luxusvilla auf Phuket mit Meerblick" />
+
+    <!-- Structured Data - Organization -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Phuket Invest Pro",
+      "alternateName": "Phuket Invest Pro DACH",
+      "url": "https://dach.phuketinvest.pro",
+      "logo": "https://dach.phuketinvest.pro/logo.png",
+      "description": "Professionelle Immobilienberatung fuer deutschsprachige Investoren auf Phuket, Thailand",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Phuket",
+        "addressRegion": "Phuket",
+        "addressCountry": "TH"
+      },
+      "areaServed": [
+        {
+          "@type": "Country",
+          "name": "Germany"
+        },
+        {
+          "@type": "Country",
+          "name": "Austria"
+        },
+        {
+          "@type": "Country",
+          "name": "Switzerland"
+        }
+      ],
+      "knowsLanguage": ["de", "en", "th"],
+      "sameAs": []
+    }
+    </script>
+
+    <!-- Structured Data - RealEstateAgent -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "RealEstateAgent",
+      "name": "Phuket Invest Pro",
+      "description": "Immobilienberatung und Vermittlung fuer deutschsprachige Investoren auf Phuket. Spezialisiert auf Luxusvillen, Apartments und Renditeimmobilien.",
+      "url": "https://dach.phuketinvest.pro",
+      "priceRange": "ab 100.000 EUR",
+      "areaServed": {
+        "@type": "Place",
+        "name": "Phuket, Thailand"
+      },
+      "makesOffer": [
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Immobilienberatung",
+            "description": "Persoenliche Beratung fuer Immobilieninvestitionen auf Phuket"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Objektvermittlung",
+            "description": "Vermittlung von geprueften Immobilien auf Phuket"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "Property Management",
+            "description": "Professionelle Verwaltung und Vermietung Ihrer Immobilie"
+          }
+        }
+      ]
+    }
+    </script>
+
+    <!-- Structured Data - WebSite with SearchAction -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Phuket Invest Pro - Immobilien fuer DACH-Investoren",
+      "alternateName": "Phuket Immobilien DACH",
+      "url": "https://dach.phuketinvest.pro",
+      "inLanguage": "de",
+      "publisher": {
+        "@type": "Organization",
+        "name": "Phuket Invest Pro"
+      }
+    }
+    </script>
+
+    <!-- Structured Data - FAQPage -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Koennen Auslaender in Thailand Immobilien kaufen?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Ja, Auslaender koennen in Thailand Eigentumswohnungen (Condominiums) im eigenen Namen erwerben, solange der auslaendische Anteil an einem Gebaeude unter 49% liegt. Fuer Villen und Haeuser gibt es legale Strukturen wie Langzeitpacht (Leasehold) oder thailaendische Gesellschaften."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Was ist der Mindestinvestitionsbetrag?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Der Einstieg in Phuket Immobilien ist ab ca. 100.000 EUR moeglich. Dies umfasst hochwertige Studio- und Ein-Zimmer-Apartments in guten Lagen mit Vermietungspotenzial."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Welche Rendite kann ich erwarten?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Phuket Immobilien bieten typischerweise Mietrenditen von 5-8% pro Jahr, je nach Lage und Objekttyp. Hinzu kommt potenzielle Wertsteigerung der Immobilie."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Wie laeuft der Kaufprozess ab?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Der Kaufprozess umfasst: 1) Beratungsgespraech und Objektauswahl, 2) Besichtigung vor Ort oder virtuell, 3) Reservierung und Due Diligence, 4) Vertragsunterzeichnung beim Notar, 5) Eigentumsuebergang und Registrierung. Wir begleiten Sie durch jeden Schritt."
+          }
+        }
+      ]
+    }
+    </script>
+
+    <!-- Preconnect fuer Performance -->
+    <link rel="preconnect" href="https://www.googletagmanager.com" />
+    <link rel="preconnect" href="https://www.google-analytics.com" />
+    <link rel="preconnect" href="https://mc.yandex.ru" />
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+    <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+
+    <!-- Theme Color fuer Mobile Browser -->
+    <meta name="theme-color" content="#326453" />
+    <meta name="msapplication-TileColor" content="#326453" />
   </head>
   <body>
     <div id="root"></div>
     <!-- Yandex.Metrika noscript -->
     <noscript><div><img src="https://mc.yandex.ru/watch/106304478" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+    <!-- Google Analytics noscript -->
+    <noscript>
+      <img height="1" width="1" style="display:none" src="https://www.googletagmanager.com/ns.html?id=G-XXXXXXXXXX" alt="" />
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

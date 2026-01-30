@@ -47,6 +47,8 @@ jobs:
           cp ./public/datenschutz.html ./dist/
           cp ./public/cookie-richtlinie.html ./dist/
           cp ./public/agb.html ./dist/
+          cp ./public/robots.txt ./dist/
+          cp ./public/sitemap.xml ./dist/
           touch ./dist/.nojekyll
           echo "dach.phuketinvest.pro" > ./dist/CNAME
 
