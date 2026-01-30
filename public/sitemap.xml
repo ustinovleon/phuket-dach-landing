@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  <!-- Hauptseite / Homepage -->
+  <url>
+    <loc>https://dach.phuketinvest.pro/</loc>
+    <xhtml:link rel="alternate" hreflang="de" href="https://dach.phuketinvest.pro/"/>
+    <xhtml:link rel="alternate" hreflang="de-DE" href="https://dach.phuketinvest.pro/"/>
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://dach.phuketinvest.pro/"/>
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://dach.phuketinvest.pro/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://dach.phuketinvest.pro/"/>
+    <lastmod>2025-01-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Impressum -->
+  <url>
+    <loc>https://dach.phuketinvest.pro/impressum.html</loc>
+    <lastmod>2025-01-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <!-- Datenschutz -->
+  <url>
+    <loc>https://dach.phuketinvest.pro/datenschutz.html</loc>
+    <lastmod>2025-01-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <!-- Cookie-Richtlinie -->
+  <url>
+    <loc>https://dach.phuketinvest.pro/cookie-richtlinie.html</loc>
+    <lastmod>2025-01-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <!-- AGB -->
+  <url>
+    <loc>https://dach.phuketinvest.pro/agb.html</loc>
+    <lastmod>2025-01-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+</urlset>

@@ -1,0 +1,36 @@
+# robots.txt fuer dach.phuketinvest.pro
+# Phuket Immobilien fuer DACH-Investoren
+
+# Allgemeine Einstellungen - Alle Suchmaschinen erlaubt
+User-agent: *
+Allow: /
+
+# Sitemap Verweis
+Sitemap: https://dach.phuketinvest.pro/sitemap.xml
+
+# Google-spezifische Einstellungen
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+# Bing-spezifische Einstellungen
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# Yandex-spezifische Einstellungen
+User-agent: Yandex
+Allow: /
+Crawl-delay: 1
+
+# Admin-Bereich nicht indexieren
+User-agent: *
+Disallow: /admin
+
+# Geschuetzte/private Bereiche
+Disallow: /api/
+Disallow: /*.json$
+Disallow: /*?*
+
+# Host-Deklaration
+Host: https://dach.phuketinvest.pro
